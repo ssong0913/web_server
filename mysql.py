@@ -47,6 +47,8 @@ class Mysql:
         db.commit()
         db.close()
 
+        return result
+
     def verify_password(self, email, password):
         db = pymysql.connect(host=self.host, user=self.user, db=self.db, password=self.password, charset=self.charset)
         curs = db.cursor()
@@ -94,6 +96,6 @@ mysql = Mysql(password='java')
 # result = check_password("1234", "$pbkdf2-sha256$29000$JcQ4RwgBAOD8v3cOAQDgPA$SUqeZnp74f6M.nrtq68Qe.BhZ/6WMyfbbBWZDqNxrlc")
 # print(result)
 
-mysql.verify_password("1@naver.com", "1234")
+# mysql.verify_password("1@naver.com", "1234")
 # mysql.verify_password("2@naver.com", "1234")
 # mysql.verify_password("1@naver.com", "12345")
