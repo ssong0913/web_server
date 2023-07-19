@@ -74,7 +74,31 @@ def register():
     
     elif request.method == "GET":
         return render_template('register.html')   
-        
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == "GET":
+        return render_template('login.html')
+    
+    elif request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        db = pymysql.connect(host=mysql.host, user=mysql.user, db=mysql.db, password=mysql.password, charset=mysql.charset)
+        curs = db.cursor()
+
+        sql = f'SELECT * FROM user WHERE email = %s;'
+
+        curs.execute(sql, email) 
+
+        rows = curs.fetchall()
+        print(rows)
+
+        if rows:
+            return str(rows[0][0])
+        else:            
+            return "User is Not Founded"
+                    
 
 if __name__ == '__main__':
     app.run(debug=True)
