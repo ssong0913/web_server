@@ -3,15 +3,30 @@ from data import Articles
 from mysql import Mysql
 import config
 import pymysql
+from datetime import timedelta
+from functools import wraps
 
 # print(Articles)
 
 app = Flask(__name__)
 
+# app.secret_key = "eungok"
+# app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=1)
+
 mysql = Mysql(password=config.PASSWORD)
-app.secret_key = "eungok"
+
+# 로그인 유지
+def is_loged_in(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        if 'is_loged_in' in session:
+            return func(*args, **kwargs)
+        else:
+            return redirect('/login')
+    return wrap
 
 @app.route('/' , methods=['GET','POST'])
+@is_loged_in
 def index():
     """ if request.method == "GET":
         os_info = dict(request.headers)
@@ -27,7 +42,7 @@ def index():
         data_2 = request.form['hello']
         print(f'{name}님 {hello}!!')
         return render_template('index.html', header = "안녕하세요adsfasdf") """
-    
+    # print(session['is_loged_in'])
     return render_template('index.html')
 
 """ @app.route('/hello', methods=['GET', 'POST'])
@@ -40,10 +55,10 @@ def hello():
         hello = request.form['hello']
         return render_template('index.html', name = name, hello = hello) """
     
-""" @app.route('/list', methods=['GET', 'POST'])
+@app.route('/list', methods=['GET', 'POST'])
 def list():
     data = Articles()
-    return render_template('list.html', data = data ) """
+    return render_template('list.html', data = data )
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -102,11 +117,26 @@ def login():
                 session['is_loged_in'] = True
                 session['username'] = rows[0][1]
                 return redirect('/')
+                # return render_template('index.html', is_loged_in = session['is_loged_in'], user=session['username'])
             else:
                 return redirect('/login')
         else:            
             return render_template('login.html')
+        
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+@app.route('/edit/<ids>')
+def edit(ids):
+    return ids
+
+@app.route('/delete/<ids>')
+def delete(ids):
+    return ids
                     
 
 if __name__ == '__main__':
+    app.config['SECRET_KEY']='engok'
     app.run(debug=True)
