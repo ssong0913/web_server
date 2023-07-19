@@ -1,4 +1,4 @@
-from flask import Flask , render_template, request
+from flask import Flask , render_template, request, redirect
 from data import Articles
 from mysql import Mysql
 import config
@@ -66,14 +66,15 @@ def register():
         print(rows)
 
         if rows:
-            return "Persistance Denied"
+
+            return render_template('register.html', data=1)
         else:
             result = mysql.insert_user(username, email, phone, password)
             print(result)
-            return "success"
+            return redirect('/login')
     
     elif request.method == "GET":
-        return render_template('register.html')   
+        return render_template('register.html', data=0)   
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():

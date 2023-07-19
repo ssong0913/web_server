@@ -7,6 +7,7 @@
     <title>Join Page</title>
 </head>
 <body>
+
     <form action="/register" method="post" class="form-example">
         <div class="form-example">
           <label for="name">Enter Username: </label>
@@ -27,6 +28,14 @@
         <div class="form-example">
           <input class="btn bg-success" type="submit" value="전송!">
         </div>
+        {% if data==1 %}
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+            <div>
+              Aleady User is Exist !!!
+            </div>
+          </div>
+        {% endif %}
     </form>
       
 </body>
