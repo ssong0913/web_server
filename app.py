@@ -56,11 +56,27 @@ def hello():
         name = request.form['name']
         hello = request.form['hello']
         return render_template('index.html', name = name, hello = hello) """
-    
+
 @app.route('/list', methods=['GET', 'POST'])
 def list():
-    data = Articles()
-    return render_template('list.html', data = data )
+    if request.method == "GET":
+        # data = Articles()
+        result = mysql.get_data()
+        print(result)
+        return render_template('list.html', data = result )
+    
+    elif request.method == "POST":
+        title = request.form['title']
+        desc = request.form['desc']
+        author = request.form['author']
+        result = mysql.insert_list(title, desc, author)
+        print(result)
+        return redirect('/list')
+    
+@app.route('/create_list')
+def create_list():    
+        return render_template('dashboard.html')
+    
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
