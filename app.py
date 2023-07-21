@@ -146,13 +146,35 @@ def logout():
     session.clear()
     return redirect('/')
 
-@app.route('/edit/<ids>')
+@app.route('/edit/<ids>' , methods=['GET', 'POST'])
 def edit(ids):
-    return ids
+    if request.method == 'GET':        
+        db = pymysql.connect(host=mysql.host, user=mysql.user, db=mysql.db, password=mysql.password, charset=mysql.charset)
+        curs = db.cursor()
 
-@app.route('/delete/<ids>')
+        sql = f'SELECT * FROM list WHERE `id` = %s;'
+
+        curs.execute(sql, ids)
+        rows = curs.fetchall()
+        print(rows)
+        db.close()
+        return render_template('list_edit.html', data = rows)
+    
+    elif request.method == 'POST':
+        title = request.form['title']
+        desc = request.form['desc']
+        author = request.form['author']
+        
+        result = mysql.update_list(ids, title, desc, author)
+        print(result)
+        return redirect('/list')
+
+@app.route('/delete/<ids>', methods=['GET', 'POST'])
 def delete(ids):
-    return ids
+    result = mysql.delete_list(ids)
+    print(result)
+    return redirect('/list')
+
                     
 
 if __name__ == '__main__':
